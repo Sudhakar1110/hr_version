@@ -1,0 +1,335 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"bz-h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h2\\\">Bizaxl HR</span>\",\"col\":12}},{\"id\":\"bz-p1\",\"type\":\"paragraph\",\"data\":{\"text\":\"Role-based HR self-service portal for employees, managers and HR teams.\",\"col\":12}},{\"id\":\"bz-s1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"bz-h2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Actions</b></span>\",\"col\":12}},{\"id\":\"bz-sc1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"HR Portal\",\"col\":3}},{\"id\":\"bz-sc2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Portal Task\",\"col\":3}},{\"id\":\"bz-sc3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Help Desk Ticket\",\"col\":3}},{\"id\":\"bz-sc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Announcement\",\"col\":3}},{\"id\":\"bz-s2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"bz-h3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Portal Modules</b></span>\",\"col\":12}},{\"id\":\"bz-cd1\",\"type\":\"card\",\"data\":{\"card_name\":\"Portal\",\"col\":4}},{\"id\":\"bz-cd2\",\"type\":\"card\",\"data\":{\"card_name\":\"Employee Lifecycle\",\"col\":4}},{\"id\":\"bz-cd3\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"bz-cd4\",\"type\":\"card\",\"data\":{\"card_name\":\"More\",\"col\":4}}]",
+ "creation": "2026-01-01 00:00:00",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "users",
+ "idx": 1,
+ "indicator_color": "Blue",
+ "is_hidden": 0,
+ "label": "Bizaxl HR",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Portal",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Portal Task",
+   "link_count": 0,
+   "link_to": "Portal Task",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Portal Notification",
+   "link_count": 0,
+   "link_to": "Portal Notification",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Announcement",
+   "link_count": 0,
+   "link_to": "Announcement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "FAQ",
+   "link_count": 0,
+   "link_to": "FAQ",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Help Desk Ticket",
+   "link_count": 0,
+   "link_to": "Help Desk Ticket",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Lifecycle",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Onboarding",
+   "link_count": 0,
+   "link_to": "Employee Onboarding",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Onboarding Step",
+   "link_count": 0,
+   "link_to": "Onboarding Step",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Onboarding Activity",
+   "link_count": 0,
+   "link_to": "Onboarding Activity",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Offboarding",
+   "link_count": 0,
+   "link_to": "Employee Offboarding",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Exit Task",
+   "link_count": 0,
+   "link_to": "Exit Task",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Document",
+   "link_count": 0,
+   "link_to": "Employee Document",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Operations",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Meeting",
+   "link_count": 0,
+   "link_to": "Meeting",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Field Visit",
+   "link_count": 0,
+   "link_to": "Field Visit",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Recognition",
+   "link_count": 0,
+   "link_to": "Recognition",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Wellness Program",
+   "link_count": 0,
+   "link_to": "Wellness Program",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Counselling Request",
+   "link_count": 0,
+   "link_to": "Counselling Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee Grievance",
+   "link_count": 0,
+   "link_to": "Employee Grievance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Compliance Task",
+   "link_count": 0,
+   "link_to": "Compliance Task",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "More",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Full and Final Settlement",
+   "link_count": 0,
+   "link_to": "Full and Final Settlement",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vendor Payout",
+   "link_count": 0,
+   "link_to": "Vendor Payout",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Visit Location",
+   "link_count": 0,
+   "link_to": "Visit Location",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Commission Plan",
+   "link_count": 0,
+   "link_to": "Sales Commission Plan",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Commission Log",
+   "link_count": 0,
+   "link_to": "Sales Commission Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Project Cost Allocation",
+   "link_count": 0,
+   "link_to": "Project Cost Allocation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "bizaxl_hr",
+ "name": "Bizaxl HR",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "HR Portal",
+   "type": "URL",
+   "url": "/dashboard"
+  },
+  {
+   "color": "Blue",
+   "label": "Portal Task",
+   "link_to": "Portal Task",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "label": "Help Desk Ticket",
+   "link_to": "Help Desk Ticket",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "label": "Announcement",
+   "link_to": "Announcement",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "label": "Meeting",
+   "link_to": "Meeting",
+   "type": "DocType"
+  }
+ ],
+ "title": "Bizaxl HR"
+}
