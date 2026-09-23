@@ -27,11 +27,11 @@ website_route_rules = []
 # Scheduler events
 scheduler_events = {
     "daily": [
-        "bizaxl_hrms.bizaxl_hr.scheduler.daily_digest",
-        "bizaxl_hrms.bizaxl_hr.scheduler.sla_escalations",
+        "bizaxl_hrms.bizaxl_hr.portal.scheduler.daily_digest",
+        "bizaxl_hrms.bizaxl_hr.portal.scheduler.sla_escalations",
     ],
     "hourly": [
-        "bizaxl_hrms.bizaxl_hr.scheduler.compliance_reminders",
+        "bizaxl_hrms.bizaxl_hr.portal.scheduler.compliance_reminders",
     ],
 }
 
