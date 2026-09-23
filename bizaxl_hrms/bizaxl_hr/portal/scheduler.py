@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#  -- default frequencies: daily / monthly / quarterly (customizable in Portal Settings)
+#  -- default frequencies: daily / monthly / quarterly (customizable in Bizaxl Portal Settings)
 
 import frappe
 from frappe import _

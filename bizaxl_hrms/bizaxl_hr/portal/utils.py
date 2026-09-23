@@ -111,7 +111,7 @@ def get_sidebar_context(context):
 
 def portal_enabled():
     try:
-        return frappe.db.get_single_value("Portal Settings", "portal_enabled", cache=True) or False
+        return frappe.db.get_single_value("Bizaxl Portal Settings", "portal_enabled", cache=True) or False
     except Exception:
         return True
 

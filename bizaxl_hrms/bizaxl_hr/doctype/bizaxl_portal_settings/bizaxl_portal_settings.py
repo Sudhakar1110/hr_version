@@ -3,5 +3,5 @@
 from frappe.model.document import Document
 
 
-class PortalSettings(Document):
+class BizaxlPortalSettings(Document):
     pass

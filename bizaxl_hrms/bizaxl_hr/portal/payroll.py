@@ -10,12 +10,12 @@ from frappe.utils import date_diff, flt, getdate, nowdate, today
 
 
 def company_dates():
-    """Return default company + fiscal year from Portal Settings (with fallbacks)."""
+    """Return default company + fiscal year from Bizaxl Portal Settings (with fallbacks)."""
     company = None
     fy = None
     try:
-        company = frappe.db.get_single_value("Portal Settings", "company")
-        fy = frappe.db.get_single_value("Portal Settings", "fiscal_year")
+        company = frappe.db.get_single_value("Bizaxl Portal Settings", "company")
+        fy = frappe.db.get_single_value("Bizaxl Portal Settings", "fiscal_year")
     except Exception:
         pass
     if not company:
@@ -26,7 +26,7 @@ def company_dates():
 
 
 def get_pf_rates():
-    """Indian EPF rules (defaults, overridable in Portal Settings)."""
+    """Indian EPF rules (defaults, overridable in Bizaxl Portal Settings)."""
     return {"employee_rate": 12.0, "employer_rate": 12.0, "ceiling": 15000.0}
 
 

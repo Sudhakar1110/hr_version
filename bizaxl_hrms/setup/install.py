@@ -56,10 +56,10 @@ def create_wellness_programs():
             }).insert(ignore_permissions=True)
 
 
-def ensure_portal_settings():
-    if not frappe.db.exists("Portal Settings", "Portal Settings"):
+def ensure_bizaxl_portal_settings():
+    if not frappe.db.exists("Bizaxl Portal Settings", "Bizaxl Portal Settings"):
         settings = frappe.get_doc({
-            "doctype": "Portal Settings",
+            "doctype": "Bizaxl Portal Settings",
             "portal_enabled": 1,
             "ai_assistant_enabled": 1,
             "default_sla_hours": 8,
@@ -77,5 +77,5 @@ def after_install():
     create_roles()
     create_ticket_categories()
     create_wellness_programs()
-    ensure_portal_settings()
+    ensure_bizaxl_portal_settings()
     frappe.db.commit()
