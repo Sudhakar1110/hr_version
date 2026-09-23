@@ -1,0 +1,30 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "bizaxl_hrms"
+authors = [
+    { name = "Bizaxl HRMS Contributors", email = "sudhakar+hrms@example.com" }
+]
+description = "Bizaxl HRMS Portal - a complete, role-based HR self-service portal built on Frappe v15 and ERPNext v15"
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = { text = "MIT" }
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = ["flake8~=6.0.0", "click~=8.1.7"]
+
+[tool.bench]
+app-name = "bizaxl_hrms"
+required-apps = ["frappe", "erpnext", "hrms"]
+
+[tool.bench.frappe-dependencies]
+frappe = ">=15.0.0,<16.0.0"
+erpnext = ">=15.0.0,<16.0.0"
+hrms = ">=15.0.0,<16.0.0"
+
+[tool.flake8]
+max-line-length = 120
+exclude = "node_modules,build,dist,.git,venv"

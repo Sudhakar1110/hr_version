@@ -1,0 +1,27 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Documents | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="folder"></i> Records</span>
+    <h2 class="bz-h2">Documents</h2>
+    <p class="bz-body-sm bz-muted">Access payslips, offer letters, and personal records in one place.</p>
+  </div>
+</section>
+<section class="bz-grid bz-grid-3">
+  <a class="bz-card" href="/payslips" style="text-decoration:none;color:inherit">
+    <div class="bz-card-title"><i data-lucide="credit-card"></i> Payslips</div>
+    <p class="bz-body-sm bz-muted" style="margin:8px 0 0">Monthly salary slips and year-to-date totals.</p>
+  </a>
+  <a class="bz-card" href="/profile" style="text-decoration:none;color:inherit">
+    <div class="bz-card-title"><i data-lucide="id-card"></i> Personal Records</div>
+    <p class="bz-body-sm bz-muted" style="margin:8px 0 0">Your profile and contact information.</p>
+  </a>
+  <div class="bz-card">
+    <div class="bz-card-title"><i data-lucide="folder"></i> HR Documents</div>
+    <p class="bz-body-sm bz-muted" style="margin:8px 0 0">Document vault is coming soon.</p>
+  </div>
+</section>
+{% endblock %}

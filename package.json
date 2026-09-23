@@ -1,0 +1,8 @@
+{
+  "name": "bizaxl_hrms",
+  "version": "0.0.1",
+  "description": "Bizaxl HRMS Portal assets",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

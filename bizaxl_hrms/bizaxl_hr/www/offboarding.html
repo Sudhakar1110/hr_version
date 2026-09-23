@@ -1,0 +1,53 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Offboarding | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="log-out"></i> Exits</span>
+    <h2 class="bz-h2">Offboarding</h2>
+    <p class="bz-body-sm bz-muted">Exit tasks, handovers, and Full & Final settlement status.</p>
+  </div>
+</section>
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="log-out"></i> Offboarding</div></div>
+    <div id="off-list" class="bz-list"></div>
+  </div>
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="banknote"></i> Full & Final</div></div>
+    <div id="ffs-list" class="bz-list"></div>
+  </div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  BZ.api("my_offboarding").then(function (r) {
+    var rows = r && r.offboarding ? r.offboarding : [];
+    var cont = document.getElementById("off-list");
+    if (!rows.length) { cont.innerHTML = "<div class='bz-empty'><i data-lucide='log-out'></i><div>No offboarding records</div></div>"; return; }
+    rows.forEach(function (o) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div class='bz-strong'>" + BZ.esc(o.name) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(o.offboarding_begin_date || "") + "</div></div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(o.boarding_status) + "</span>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+  BZ.api("my_ffs_status").then(function (r) {
+    var rows = r && r.ffs ? r.ffs : [];
+    var cont = document.getElementById("ffs-list");
+    if (!rows.length) { cont.innerHTML = "<div class='bz-empty'><i data-lucide='banknote'></i><div>No settlement yet</div></div>"; return; }
+    rows.forEach(function (f) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div class='bz-strong'>" + BZ.esc(f.name) + "</div>" +
+        "<div class='bz-caption'>Last working day: " + BZ.esc(f.last_working_day || "--") + "</div></div>" +
+        "<span class='bz-badge " + (f.status === "Completed" ? "bz-badge-success" : "bz-badge-blue") + "'>" + BZ.esc(f.status) + "</span>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:VIS-{YYYY}-{######}",
+ "creation": "2026-01-01 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "visit_date",
+  "client",
+  "purpose",
+  "visit_location",
+  "status",
+  "section_break_geo",
+  "check_in_lat",
+  "check_in_lng",
+  "check_in_time",
+  "check_out_lat",
+  "check_out_lng",
+  "check_out_time",
+  "inside_geofence",
+  "section_break_notes",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "visit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Visit Date"
+  },
+  {
+   "fieldname": "client",
+   "fieldtype": "Link",
+   "label": "Client",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "purpose",
+   "fieldtype": "Data",
+   "label": "Purpose"
+  },
+  {
+   "fieldname": "visit_location",
+   "fieldtype": "Link",
+   "label": "Visit Location (Geo-fence)",
+   "options": "Visit Location"
+  },
+  {
+   "default": "Checked In",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Scheduled\nChecked In\nChecked Out\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "section_break_geo",
+   "fieldtype": "Section Break",
+   "label": "Live GPS"
+  },
+  {
+   "fieldname": "check_in_lat",
+   "fieldtype": "Float",
+   "label": "Check-in Latitude",
+   "precision": "6"
+  },
+  {
+   "fieldname": "check_in_lng",
+   "fieldtype": "Float",
+   "label": "Check-in Longitude",
+   "precision": "6"
+  },
+  {
+   "fieldname": "check_in_time",
+   "fieldtype": "Datetime",
+   "label": "Check-in Time"
+  },
+  {
+   "fieldname": "check_out_lat",
+   "fieldtype": "Float",
+   "label": "Check-out Latitude",
+   "precision": "6"
+  },
+  {
+   "fieldname": "check_out_lng",
+   "fieldtype": "Float",
+   "label": "Check-out Longitude",
+   "precision": "6"
+  },
+  {
+   "fieldname": "check_out_time",
+   "fieldtype": "Datetime",
+   "label": "Check-out Time"
+  },
+  {
+   "default": "0",
+   "fieldname": "inside_geofence",
+   "fieldtype": "Check",
+   "label": "Inside Geo-fence"
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "bizaxl_hr",
+ "name": "Field Visit",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - Employee"
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - Team Leader"
+  },
+  {
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - HR Manager"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - Founder"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "purpose",
+ "track_changes": 1
+}

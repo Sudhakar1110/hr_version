@@ -1,0 +1,45 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Interviews | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="video"></i> Hiring</span>
+    <h2 class="bz-h2">Interviews</h2>
+    <p class="bz-body-sm bz-muted">Your upcoming interview slots across the hiring pipeline.</p>
+  </div>
+</section>
+
+<section class="bz-card" style="max-width:900px">
+  <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="calendar"></i> Upcoming (next 14 days)</div></div>
+  <div id="iv-list" class="bz-list"></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("iv-list");
+  BZ.api("upcoming_interviews", { days: 14 }).then(function (rows) {
+    cont.innerHTML = "";
+    if (!rows || !rows.length) {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='video'></i><div>No interviews scheduled</div></div>";
+      return;
+    }
+    rows.forEach(function (i) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      var d = i.scheduled_on ? new Date(i.scheduled_on.replace(" ", "T")) : null;
+      var when = d ? d.toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "TBD";
+      row.innerHTML =
+        "<div class='bz-row-left'><span class='bz-avatar'>" + BZ.initials(i.applicant_name) + "</span>" +
+        "<div><div class='bz-strong'>" + BZ.esc(i.applicant_name) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(i.interview_round || "") + " · " + BZ.esc(i.interview_venue || "") + "</div></div></div>" +
+        "<div class='right'><div class='bz-strong'>" + when + "</div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(i.status || "Scheduled") + "</span></div>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

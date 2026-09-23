@@ -1,0 +1,72 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}My Profile | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="user"></i> Personal</span>
+    <h2 class="bz-h2">My Profile</h2>
+  </div>
+</section>
+
+<section class="bz-hero">
+  <div style="display:flex;align-items:center;gap:20px">
+    <span class="bz-avatar" id="p-avatar" style="width:64px;height:64px;font-size:24px">?</span>
+    <div>
+      <div class="bz-hero-title" id="p-name">--</div>
+      <div class="bz-hero-sub" id="p-designation">--</div>
+    </div>
+  </div>
+  <a class="bz-btn bz-btn-primary" href="/leave-and-attendance"><i data-lucide="calendar-plus"></i> Apply Leave</a>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="id-card"></i> Work Information</div></div>
+    <div class="bz-list" id="p-work"></div>
+  </div>
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="contact"></i> Personal Information</div></div>
+    <div class="bz-list" id="p-personal"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  var workFields = [
+    ["Employee ID", "name"], ["Department", "department"], ["Designation", "designation"],
+    ["Reports To", "reports_to_name"], ["Employment Type", "employment_type"],
+    ["Date of Joining", "date_of_joining"], ["Company", "company"], ["Status", "status"]
+  ];
+  var personalFields = [
+    ["Email", "email"], ["Company Email", "company_email"], ["Personal Email", "personal_email"],
+    ["Mobile", "mobile_number"], ["Address", "current_address"], ["Qualification", "qualification"],
+    ["Blood Group", "blood_group"], ["Marital Status", "marital_status"]
+  ];
+
+  function render(list, data, fields) {
+    list.innerHTML = "";
+    fields.forEach(function (kv) {
+      var val = data[kv[1]];
+      if (val === undefined || val === null) return;
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-caption'>" + kv[0] + "</div><div class='bz-strong' style='text-align:right'>" + BZ.esc(val) + "</div>";
+      list.appendChild(row);
+    });
+  }
+
+  BZ.api("employee_profile").then(function (p) {
+    if (!p) return;
+    document.getElementById("p-name").textContent = p.employee_name;
+    document.getElementById("p-designation").textContent = p.designation || "Member";
+    document.getElementById("p-avatar").textContent = BZ.initials(p.employee_name);
+    render(document.getElementById("p-work"), p, workFields);
+    render(document.getElementById("p-personal"), p, personalFields);
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Directory | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="search"></i> Colleagues</span>
+    <h2 class="bz-h2">Employee Directory</h2>
+  </div>
+</section>
+
+<section class="bz-card">
+  <div class="bz-grid bz-grid-3" style="margin-bottom:16px">
+    <div class="bz-field" style="margin:0"><label>Name</label><input class="bz-input" id="f-name" placeholder="Search people..."></div>
+    <div class="bz-field" style="margin:0"><label>Department</label><input class="bz-input" id="f-dept" placeholder="e.g. Engineering"></div>
+    <div class="bz-field" style="margin:0"><label>Designation</label><input class="bz-input" id="f-desig" placeholder="e.g. Software Engineer"></div>
+  </div>
+  <button class="bz-btn bz-btn-secondary" id="bz-search"><i data-lucide="search"></i> Search</button>
+</section>
+
+<section class="bz-grid bz-grid-3" id="bz-results"></section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("bz-results");
+
+  function search() {
+    BZ.api("directory", {
+      query: document.getElementById("f-name").value,
+      department: document.getElementById("f-dept").value,
+      designation: document.getElementById("f-desig").value
+    }).then(function (rows) {
+      cont.innerHTML = "";
+      if (!rows || !rows.length) {
+        cont.innerHTML = "<div class='bz-empty' style='grid-column:1/-1'><i data-lucide='search-x'></i><div>No matching employees</div></div>";
+        return;
+      }
+      rows.forEach(function (e) {
+        var card = document.createElement("div"); card.className = "bz-card";
+        card.innerHTML =
+          "<div style='display:flex;align-items:center;gap:12px;margin-bottom:12px'>" +
+          "<span class='bz-avatar'>" + BZ.initials(e.employee_name) + "</span>" +
+          "<div><div class='bz-strong'>" + BZ.esc(e.employee_name) + "</div>" +
+          "<div class='bz-caption'>" + BZ.esc(e.designation || "Member") + "</div></div></div>" +
+          (e.department ? "<div class='bz-feature'><i data-lucide='users'></i>" + BZ.esc(e.department) + "</div>" : "") +
+          (e.mobile_number ? "<div class='bz-feature'><i data-lucide='phone'></i>" + BZ.esc(e.mobile_number) + "</div>" : "") +
+          (e.company_email ? "<div class='bz-feature'><i data-lucide='mail'></i>" + BZ.esc(e.company_email) + "</div>" : "");
+        cont.appendChild(card);
+      });
+    }).catch(function(){});
+  }
+
+  document.getElementById("bz-search").addEventListener("click", search);
+  ["f-name", "f-dept", "f-desig"].forEach(function (id) {
+    document.getElementById(id).addEventListener("keydown", function (e) { if (e.key === "Enter") search(); });
+  });
+  search();
+});
+</script>
+{% endblock %}

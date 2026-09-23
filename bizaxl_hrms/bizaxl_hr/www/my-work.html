@@ -1,0 +1,23 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}My Work | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="clipboard-check"></i> Productivity</span>
+    <h2 class="bz-h2">My Work</h2>
+  </div>
+</section>
+
+<section class="bz-card" style="max-width:860px">
+  <div class="bz-empty">
+    <i data-lucide="clipboard-check"></i>
+    <div class="bz-h4">My Work is coming soon</div>
+    <p class="bz-body-sm bz-muted">Active tasks, assigned projects, and timesheets will appear here.</p>
+    <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+      <a class="bz-btn bz-btn-primary" href="/tasks"><i data-lucide="check-square"></i> View Tasks</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

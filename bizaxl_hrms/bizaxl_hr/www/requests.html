@@ -1,0 +1,55 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}My Requests | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="inbox"></i> Approvals</span>
+    <h2 class="bz-h2">My Requests</h2>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="coffee"></i> Leave Requests</div></div>
+    <div id="r-leave" class="bz-list"></div>
+  </div>
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="life-buoy"></i> Support Tickets</div></div>
+    <div id="r-tickets" class="bz-list"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  BZ.api("leave_applications", { limit: 10 }).then(function (rows) {
+    var cont = document.getElementById("r-leave");
+    if (!rows || !rows.length) { cont.innerHTML = "<div class='bz-empty'><i data-lucide='inbox'></i><div>Nothing submitted yet</div></div>"; return; }
+    rows.forEach(function (r) {
+      var tone = r.status === "Approved" ? "success" : (r.status === "Rejected" ? "danger" : "gray-10");
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(r.leave_type) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(r.from_date) + " &rarr; " + BZ.esc(r.to_date) + "</div></div></div>" +
+        "<span class='bz-badge bz-badge-" + tone + "'>" + BZ.esc(r.status) + "</span>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+
+  BZ.api("my_tickets").then(function (rows) {
+    var cont = document.getElementById("r-tickets");
+    if (!rows || !rows.length) { cont.innerHTML = "<div class='bz-empty'><i data-lucide='inbox'></i><div>No tickets raised</div></div>"; return; }
+    rows.forEach(function (t) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(t.subject) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(t.name) + "</div></div></div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(t.status) + "</span>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

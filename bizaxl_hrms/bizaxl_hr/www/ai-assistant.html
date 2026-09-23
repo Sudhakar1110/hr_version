@@ -1,0 +1,58 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}AI Assistant | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="bot"></i> HR Copilot</span>
+    <h2 class="bz-h2">AI Assistant</h2>
+    <p class="bz-body-sm bz-muted">Try: "leave balance", "my attendance", "latest payslip", "upcoming holidays", "leave policy".</p>
+  </div>
+</section>
+
+<section class="bz-card" style="max-width:900px">
+  <div class="bz-chat" id="bz-chat">
+    <div class="bz-msg bz-msg-bot">Hello! I am your HR assistant. Ask me about leave balance, attendance, payslips, holidays or policies.</div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:16px">
+    <input class="bz-input" id="bz-chat-input" placeholder="Type your question..."
+      style="flex:1;height:44px">
+    <button class="bz-btn bz-btn-primary" id="bz-chat-send"><i data-lucide="send"></i> Send</button>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var chat = document.getElementById("bz-chat");
+  var input = document.getElementById("bz-chat-input");
+
+  function addMsg(text, isUser) {
+    var el = document.createElement("div");
+    el.className = "bz-msg " + (isUser ? "bz-msg-user" : "bz-msg-bot");
+    el.textContent = text;
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+    return el;
+  }
+
+  function send() {
+    var msg = input.value.trim();
+    if (!msg) return;
+    input.value = "";
+    addMsg(msg, true);
+    var waiting = addMsg("Thinking...", false);
+    BZ.api("ai_chat", { message: msg })
+      .then(function (r) {
+        waiting.textContent = (r && r.answer) ? r.answer : "I could not find an answer.";
+      })
+      .catch(function () { waiting.textContent = "Sorry, something went wrong."; });
+  }
+
+  document.getElementById("bz-chat-send").addEventListener("click", send);
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
+});
+</script>
+{% endblock %}

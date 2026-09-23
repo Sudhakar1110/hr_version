@@ -1,0 +1,146 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:CMPL-{YYYY}-{######}",
+ "creation": "2026-01-01 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "compliance_type",
+  "title",
+  "quarter",
+  "due_date",
+  "status",
+  "assigned_to",
+  "section_break_notes",
+  "notes",
+  "form_24q_generated",
+  "form_16a_generated",
+  "filing_date"
+ ],
+ "fields": [
+  {
+   "default": "TDS",
+   "fieldname": "compliance_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Compliance Type",
+   "options": "PF\nESI\nTDS\nPT\nLWF\nForm 24Q\nForm 16A\nAudit"
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "quarter",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Quarter / Period"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Due Date"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending\nIn Progress\nFiled\nCompleted\nOverdue"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned To",
+   "options": "User"
+  },
+  {
+   "fieldname": "section_break_notes",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "default": "0",
+   "fieldname": "form_24q_generated",
+   "fieldtype": "Check",
+   "label": "Form 24Q (NSDL FVU) generated"
+  },
+  {
+   "default": "0",
+   "fieldname": "form_16a_generated",
+   "fieldtype": "Check",
+   "label": "Form 16 Part A generated"
+  },
+  {
+   "fieldname": "filing_date",
+   "fieldtype": "Date",
+   "label": "Filing Date"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "bizaxl_hr",
+ "name": "Compliance Task",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - Payroll Officer"
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - HR Manager"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - Founder"
+  }
+ ],
+ "sort_field": "due_date",
+ "sort_order": "ASC",
+ "title_field": "title",
+ "track_changes": 1
+}

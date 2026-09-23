@@ -1,0 +1,44 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Holiday Calendar | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="calendar"></i> Days Off</span>
+    <h2 class="bz-h2">Holiday Calendar</h2>
+  </div>
+</section>
+
+<section class="bz-card" style="max-width:860px">
+  <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="party-popper"></i> Upcoming Holidays</div></div>
+  <div id="h-list" class="bz-list"></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("h-list");
+  BZ.api("upcoming_holidays", { limit: 40 }).then(function (rows) {
+    cont.innerHTML = "";
+    if (!rows || !rows.length) {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='calendar'></i><div>No upcoming holidays in the default list</div></div>";
+      return;
+    }
+    rows.forEach(function (h) {
+      var d = new Date(h.holiday_date + "T00:00:00");
+      var pretty = d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML =
+        "<div class='bz-row-left' style='gap:14px'><span class='bz-avatar' style='border-radius:10px'>" +
+        d.toLocaleDateString("en-IN", { day: "numeric" }) + "</span>" +
+        "<div><div class='bz-strong'>" + BZ.esc(h.description || "Holiday") + "</div>" +
+        "<div class='bz-caption'>" + pretty + "</div></div></div>" +
+        (h.weekly_off ? "<span class='bz-badge bz-badge-blue'>Weekly Off</span>" : "");
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

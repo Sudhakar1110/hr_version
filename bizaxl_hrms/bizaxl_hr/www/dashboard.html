@@ -1,0 +1,230 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Dashboard | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="sparkles"></i> My Workspace</span>
+    <h2 class="bz-h2" id="bz-hello">Welcome back</h2>
+    <p class="bz-body-sm bz-muted" id="bz-today"></p>
+  </div>
+</section>
+
+<section class="bz-hero">
+  <div>
+    <div class="bz-hero-eyebrow"><i data-lucide="sun"></i> Your day at a glance</div>
+    <h3 class="bz-hero-title" id="bz-hero-line">Attendance check pending</h3>
+    <p class="bz-hero-sub" id="bz-hero-sub">Mark your check-in, review your leave balance, or ask the AI assistant anything HR.</p>
+  </div>
+  <div style="display:flex; gap:12px; flex-wrap:wrap">
+    <a class="bz-btn bz-btn-primary" href="/leave-and-attendance"><i data-lucide="calendar-plus"></i> Apply Leave</a>
+    <a class="bz-btn bz-btn-tertiary" href="/ai-assistant"><i data-lucide="bot"></i> Ask AI</a>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-4">
+  <div class="bz-card bz-stat">
+    <div class="bz-stat-value" id="bz-stat-attend">--%</div>
+    <div class="bz-stat-label">Attendance (30 days)</div>
+  </div>
+  <div class="bz-card bz-stat">
+    <div class="bz-stat-value" id="bz-stat-leave">--</div>
+    <div class="bz-stat-label">Leave days available</div>
+  </div>
+  <div class="bz-card bz-stat">
+    <div class="bz-stat-value" id="bz-stat-holidays">--</div>
+    <div class="bz-stat-label">Upcoming holidays</div>
+  </div>
+  <div class="bz-card bz-stat">
+    <div class="bz-stat-value" id="bz-stat-notif">--</div>
+    <div class="bz-stat-label">Unread notifications</div>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-3">
+  <div class="bz-card">
+    <div class="bz-card-header">
+      <div class="bz-card-title"><i data-lucide="coffee"></i> Leave Balance</div>
+    </div>
+    <div id="bz-leave-list" class="bz-panel"></div>
+    <a href="/leave-and-attendance" class="bz-btn bz-btn-ghost" style="margin-top:8px"><i data-lucide="arrow-right"></i> View all</a>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header">
+      <div class="bz-card-title"><i data-lucide="fingerprint"></i> Today's Attendance</div>
+    </div>
+    <div class="bz-badge bz-badge-mint" id="bz-attn-status">Checking...</div>
+    <p class="bz-body-sm bz-muted" style="margin:10px 0 0">Last 30 days: <span class="bz-strong" id="bz-attn-detail">--</span></p>
+    <div class="bz-progress" style="margin:16px 0"><div id="bz-attn-bar" style="width:0%"></div></div>
+    <div style="display:flex; gap:10px; margin-top:12px">
+      <button class="bz-btn bz-btn-primary bz-btn-sm" id="bz-checkin-btn"><i data-lucide="log-in"></i> Check-in</button>
+      <button class="bz-btn bz-btn-tertiary bz-btn-sm" id="bz-checkout-btn"><i data-lucide="log-out"></i> Check-out</button>
+    </div>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header">
+      <div class="bz-card-title"><i data-lucide="party-popper"></i> Upcoming Holidays</div>
+    </div>
+    <div id="bz-holidays" class="bz-list"></div>
+    <a href="/holiday-calendar" class="bz-btn bz-btn-ghost" style="margin-top:8px"><i data-lucide="arrow-right"></i> Full calendar</a>
+  </div>
+</section>
+
+<section class="bz-divider-gradient"></section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header">
+      <div class="bz-card-title"><i data-lucide="bell"></i> Recent Notifications</div>
+      <a href="/notifications" class="bz-btn bz-btn-ghost bz-btn-sm">See all</a>
+    </div>
+    <div id="bz-notifs" class="bz-list"></div>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header">
+      <div class="bz-card-title"><i data-lucide="star"></i> Recognition Wall</div>
+      <a href="/recognition" class="bz-btn bz-btn-ghost bz-btn-sm">View all</a>
+    </div>
+    <div id="bz-rewards" class="bz-list"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  var dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var now = new Date();
+  document.getElementById("bz-today").textContent =
+    dayNames[now.getDay()] + ", " + now.toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+
+  BZ.api("current_user").then(function (u) {
+    if (u && u.employee_name) {
+      document.getElementById("bz-hello").textContent = "Welcome back, " + u.employee_name.split(" ")[0];
+    }
+  }).catch(function(){});
+
+  BZ.api("attendance_today").then(function (a) {
+    var st = document.getElementById("bz-attn-status");
+    var line = document.getElementById("bz-hero-line");
+    var sub = document.getElementById("bz-hero-sub");
+    if (a && a.overview) {
+      st.textContent = a.overview.status;
+      if (a.overview.first_in) {
+        line.textContent = "Checked in at " + a.overview.first_in;
+        sub.textContent = "Enjoy your day. Track your time, apply leave, or start a field visit.";
+      } else {
+        line.textContent = "Not checked in yet";
+        sub.textContent = "Tap Check-in to start your day, or apply for leave below.";
+      }
+    }
+  }).catch(function(){});
+
+  BZ.api("attendance_summary", { days: 30 }).then(function (s) {
+    if (s) {
+      document.getElementById("bz-stat-attend").textContent = s.percentage + "%";
+      var bar = document.getElementById("bz-attn-bar");
+      bar.style.width = Math.min(s.percentage, 100) + "%";
+      document.getElementById("bz-attn-detail").textContent =
+        s.present + " present, " + s.absent + " absent, " + s.leave + " on leave";
+    }
+  }).catch(function(){});
+
+  BZ.api("leave_summary").then(function (ls) {
+    var cont = document.getElementById("bz-leave-list");
+    if (ls) {
+      document.getElementById("bz-stat-leave").textContent = ls.total_available;
+      (ls.balances || []).slice(0, 4).forEach(function (b) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-badge bz-badge-blue'>" + BZ.esc(b.leave_type) + "</span></div>" +
+          "<div style='display:flex;align-items:center;gap:8px'><b>" + BZ.esc(b.balance) + "d</b></div>";
+        cont.appendChild(row);
+      });
+      if (!ls.balances || !ls.balances.length) {
+        cont.innerHTML = "<div class='bz-empty'><i data-lucide='coffee'></i><div>No allocations yet</div></div>";
+      }
+    }
+  }).catch(function(){});
+
+  BZ.api("upcoming_holidays").then(function (h) {
+    var cont = document.getElementById("bz-holidays");
+    if (h && h.length) {
+      document.getElementById("bz-stat-holidays").textContent = h.length;
+      h.forEach(function (x) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        var d = new Date(x.holiday_date + "T00:00:00");
+        var label = d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+        row.innerHTML =
+          "<div class='bz-row-left'><i data-lucide='calendar' style='width:18px;height:18px;color:var(--bz-mint)'></i>" +
+          "<div><div class='bz-strong'>" + BZ.esc(x.description || "Holiday") + "</div>" +
+          "<div class='bz-caption'>" + label + "</div></div></div>";
+        cont.appendChild(row);
+      });
+    } else {
+      document.getElementById("bz-stat-holidays").textContent = "0";
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='calendar'></i><div>No upcoming holidays</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("notification_unread_count").then(function (r) {
+    document.getElementById("bz-stat-notif").textContent = r && r.count ? r.count : 0;
+  }).catch(function(){});
+
+  BZ.api("notification_feed", { limit: 5 }).then(function (rows) {
+    var cont = document.getElementById("bz-notifs");
+    if (rows && rows.length) {
+      cont.innerHTML = "";
+      rows.forEach(function (n) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-badge bz-badge-" + (n.read ? "gray-10" : "mint") + "'>" + BZ.esc(n.category || "System") + "</span>" +
+          "<div><div class='bz-strong'>" + BZ.esc(n.title) + "</div>" +
+          (n.message ? "<div class='bz-caption'>" + BZ.esc(n.message.slice(0, 90)) + (n.message.length > 90 ? "..." : "") + "</div>" : "") +
+          "</div></div><span class='bz-caption'>" + BZ.relTime(n.created_at) + "</span>";
+        cont.appendChild(row);
+      });
+    } else {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='bell'></i><div>No notifications yet</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("rewards_leaderboard", { limit: 4 }).then(function (rows) {
+    var cont = document.getElementById("bz-rewards");
+    if (rows && rows.length) {
+      cont.innerHTML = "";
+      var medals = ["crown", "medal", "star", "sparkles"];
+
+      rows.forEach(function (r, i) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-avatar'>" + BZ.initials(r.employee_name) + "</span>" +
+          "<div><div class='bz-strong'>" + BZ.esc(r.employee_name) + "</div>" +
+          "<div class='bz-caption'>" + r.recognitions + " recognition" + (r.recognitions > 1 ? "s" : "") + "</div></div></div>" +
+          "<span class='bz-badge bz-badge-mint'><i data-lucide='zap'></i> " + BZ.esc(r.points) + " pts</span>";
+        cont.appendChild(row);
+      });
+    } else {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='star'></i><div>Be the first on the wall</div></div>";
+    }
+  }).catch(function(){});
+
+  function markInOut(type) {
+    document.getElementById("bz-checkin-btn").disabled = true;
+    document.getElementById("bz-checkout-btn").disabled = true;
+    BZ.api("mark_checkin", { log_type: type })
+      .then(function () { BZ.toast(type === "IN" ? "Checked in" : "Checked out"); setTimeout(function () { location.reload(); }, 600); })
+      .catch(function () { BZ.toast("Could not record " + type.toLowerCase(), "error"); });
+  }
+  var inBtn = document.getElementById("bz-checkin-btn");
+  var outBtn = document.getElementById("bz-checkout-btn");
+  if (inBtn) inBtn.addEventListener("click", function () { markInOut("IN"); });
+  if (outBtn) outBtn.addEventListener("click", function () { markInOut("OUT"); });
+});
+</script>
+{% endblock %}

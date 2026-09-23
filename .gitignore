@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Frappe / bench
+sites/
+public/assets/
+node_modules/
+*.bundle
+backups/
+archived/
+config/site_config.json
+
+# Editors / OS
+.idea/
+.vscode/
+*.suo
+*.user
+Thumbs.db
+.DS_Store
+
+# Pyright / tooling
+.pyright/
+pyrightconfig.local.json

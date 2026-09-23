@@ -1,0 +1,84 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Wellness | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="heart"></i> Well-being</span>
+    <h2 class="bz-h2">Wellness Programs</h2>
+    <p class="bz-body-sm bz-muted">Join programs, track participation, and access confidential counselling.</p>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-3" id="w-programs"></section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="clipboard-check"></i> My Participation</div></div>
+    <div id="w-mine" class="bz-list"></div>
+  </div>
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="message-heart"></i> Counselling</div></div>
+    <p class="bz-body-sm bz-muted">Private, HR-confidential support. Submit a request and a counsellor will reach out.</p>
+    <div class="bz-field" style="margin-top:12px"><label>Reason (kept confidential)</label><textarea class="bz-textarea" id="c-reason"></textarea></div>
+    <button class="bz-btn bz-btn-secondary" id="c-submit" style="width:100%"><i data-lucide="shield"></i> Request Counselling</button>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var grid = document.getElementById("w-programs");
+
+  BZ.api("wellness_programs").then(function (rows) {
+    grid.innerHTML = "";
+    if (!rows || !rows.length) {
+      grid.innerHTML = "<div class='bz-card bz-empty' style='grid-column:1/-1'><i data-lucide='heart'></i><div>No active programs right now</div></div>";
+      return;
+    }
+    rows.forEach(function (p) {
+      var card = document.createElement("div"); card.className = "bz-card";
+      card.innerHTML =
+        "<div class='bz-card-header' style='margin-bottom:10px'><div class='bz-card-title' style='font-size:16px'>" + BZ.esc(p.program_name) + "</div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(p.program_type) + "</span></div>" +
+        "<p style='font-size:13px;color:var(--bz-gray-40);min-height:36px'>" + BZ.esc(p.description || "") + "</p>" +
+        "<div class='bz-caption'>" + BZ.esc(p.start_date || "") + " &rarr; " + BZ.esc(p.end_date || "") + "</div>" +
+        "<button class='bz-btn bz-btn-tertiary bz-btn-sm' style='margin-top:12px;width:100%' data-reg='" + BZ.esc(p.name) + "'>Enroll</button>";
+      grid.appendChild(card);
+    });
+    grid.querySelectorAll("[data-reg]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        BZ.api("register_wellness", { program: b.getAttribute("data-reg") })
+          .then(function () { BZ.toast("Enrolled!"); })
+          .catch(function () { BZ.toast("Could not enroll"); });
+      });
+    });
+  }).catch(function(){});
+
+  BZ.api("my_wellness").then(function (rows) {
+    var cont = document.getElementById("w-mine");
+    if (rows && rows.length) {
+      cont.innerHTML = "";
+      rows.forEach(function (r) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML = "<div class='bz-row-left'><i data-lucide='heart' style='color:var(--bz-mint)'></i><div><div class='bz-strong'>" +
+          BZ.esc(r.program_name) + "</div><div class='bz-caption'>" + BZ.esc(r.joined_date || "") + "</div></div></div>" +
+          "<span class='bz-badge bz-badge-" + (r.status === "Enrolled" ? "mint" : "gray-10") + "'>" + BZ.esc(r.status) + "</span>";
+        cont.appendChild(row);
+      });
+    } else {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='clipboard-check'></i><div>Not enrolled anywhere yet</div></div>";
+    }
+  }).catch(function(){});
+
+  document.getElementById("c-submit").addEventListener("click", function () {
+    var reason = document.getElementById("c-reason").value;
+    BZ.api("submit_counselling", { reason: reason })
+      .then(function () { BZ.toast("Request submitted confidentially"); document.getElementById("c-reason").value = ""; })
+      .catch(function () { BZ.toast("Could not submit request"); });
+  });
+});
+</script>
+{% endblock %}

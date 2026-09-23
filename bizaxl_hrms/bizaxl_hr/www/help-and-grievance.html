@@ -1,0 +1,82 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Help & Grievance | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="life-buoy"></i> Support</span>
+    <h2 class="bz-h2">Help & Grievance</h2>
+    <p class="bz-body-sm bz-muted">Raise a ticket, track resolution, or submit a confidential grievance.</p>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="plus-circle"></i> New Ticket</div></div>
+    <div class="bz-field"><label for="t-subject">Subject</label><input class="bz-input" id="t-subject"></div>
+    <div class="bz-grid bz-grid-2">
+      <div class="bz-field"><label for="t-cat">Category</label><select class="bz-select" id="t-cat"></select></div>
+      <div class="bz-field"><label for="t-pri">Priority</label>
+        <select class="bz-select" id="t-pri"><option>Low</option><option>Medium</option><option>High</option><option>Urgent</option></select>
+      </div>
+    </div>
+    <div class="bz-field"><label for="t-desc">Description</label><textarea class="bz-textarea" id="t-desc"></textarea></div>
+    <button class="bz-btn bz-btn-primary" id="tz-submit" style="width:100%"><i data-lucide="send"></i> Submit Ticket</button>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="inbox"></i> My Tickets</div></div>
+    <div id="t-list" class="bz-list"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var catSel = document.getElementById("t-cat");
+
+  BZ.api("ticket_categories").then(function (cats) {
+    (cats || []).forEach(function (c) {
+      var o = document.createElement("option");
+      o.value = c.name; o.textContent = c.category_name;
+      catSel.appendChild(o);
+    });
+  }).catch(function(){});
+
+  function load() {
+    BZ.api("my_tickets").then(function (rows) {
+      var cont = document.getElementById("t-list");
+      cont.innerHTML = "";
+      if (!rows || !rows.length) {
+        cont.innerHTML = "<div class='bz-empty'><i data-lucide='inbox'></i><div>No tickets raised yet</div></div>";
+        return;
+      }
+      rows.forEach(function (t) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        var tone = t.status === "Resolved" || t.status === "Closed" ? "success" : (t.status === "Rejected" ? "danger" : "gray-10");
+        row.innerHTML =
+          "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(t.subject) + "</div>" +
+          "<div class='bz-caption'>" + BZ.esc(t.name) + " · " + BZ.esc(t.category || "General") + "</div></div></div>" +
+          "<span class='bz-badge bz-badge-" + tone + "'>" + BZ.esc(t.status) + "</span>";
+        cont.appendChild(row);
+      });
+    }).catch(function(){});
+  }
+  load();
+
+  document.getElementById("tz-submit").addEventListener("click", function () {
+    BZ.api("create_ticket", {
+      subject: document.getElementById("t-subject").value,
+      description: document.getElementById("t-desc").value,
+      category: catSel.value,
+      priority: document.getElementById("t-pri").value
+    }).then(function () {
+      BZ.toast("Ticket raised");
+      load();
+    }).catch(function () { BZ.toast("Could not raise ticket"); });
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Notifications | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="bell"></i> Updates</span>
+    <h2 class="bz-h2">Notifications</h2>
+  </div>
+  <button class="bz-btn bz-btn-tertiary" id="bz-mark-all"><i data-lucide="check-check"></i> Mark all as read</button>
+</section>
+
+<section class="bz-card" style="max-width:860px">
+  <div id="bz-feed" class="bz-list"></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("bz-feed");
+
+  function load() {
+    BZ.api("notification_feed", { limit: 60 }).then(function (rows) {
+      cont.innerHTML = "";
+      if (!rows || !rows.length) {
+        cont.innerHTML = "<div class='bz-empty'><i data-lucide='bell-off'></i><div>You're all caught up</div></div>";
+        return;
+      }
+      rows.forEach(function (n) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left' style='gap:14px'>" +
+          (n.read ? "" : "<span style='width:8px;height:8px;border-radius:50%;background:var(--bz-mint)'></span>") +
+          "<div><div class='bz-strong'>" + BZ.esc(n.title) + "</div>" +
+          (n.message ? "<div style='font-size:13px;color:var(--bz-gray-40);margin-top:2px'>" + BZ.esc(n.message) + "</div>" : "") +
+          "<div class='bz-caption'>" + BZ.esc(n.category || "") + "</div></div></div>" +
+          "<span class='bz-caption'>" + BZ.relTime(n.created_at) + "</span>";
+        if (n.link) row.style.cursor = "pointer";
+        if (n.link) row.addEventListener("click", function () { window.location = n.link; });
+        cont.appendChild(row);
+      });
+    }).catch(function(){});
+  }
+  load();
+
+  document.getElementById("bz-mark-all").addEventListener("click", function () {
+    BZ.api("mark_notifications_read").then(function () { load(); }).catch(function(){});
+  });
+});
+</script>
+{% endblock %}

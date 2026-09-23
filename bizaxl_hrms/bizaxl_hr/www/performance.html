@@ -1,0 +1,81 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Performance | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="trending-up"></i> Growth</span>
+    <h2 class="bz-h2">Performance</h2>
+    <p class="bz-body-sm bz-muted">Appraisals, feedback, goals, and skill growth in one place.</p>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-4">
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="pf-appr">--</div><div class="bz-stat-label">Appraisals</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="pf-fb">--</div><div class="bz-stat-label">Feedback Notes</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="pf-gaps">--</div><div class="bz-stat-label">Skill Gaps</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="pf-okr">--%</div><div class="bz-stat-label">Goal Progress</div></div>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="clipboard-check"></i> Appraisals</div></div>
+    <div id="pf-appr-list" class="bz-list"></div>
+  </div>
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="messages-square"></i> Feedback</div></div>
+    <div id="pf-fb-list" class="bz-list"></div>
+  </div>
+</section>
+
+<section class="bz-card">
+  <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="target"></i> Skill Gap Analysis</div></div>
+  <div id="pf-gap-list" class="bz-list"></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  BZ.api("performance_data").then(function (d) {
+    if (!d) return;
+    document.getElementById("pf-appr").textContent = (d.appraisals || []).length;
+    document.getElementById("pf-fb").textContent = (d.feedback || []).length;
+    document.getElementById("pf-gaps").textContent = (d.skill_gaps && d.skill_gaps.gaps ? d.skill_gaps.gaps.length : 0);
+    document.getElementById("pf-okr").textContent = (d.okr ? d.okr.avgProgress : 0) + "%";
+
+    var ap = document.getElementById("pf-appr-list");
+    (d.appraisals || []).slice(0, 5).forEach(function (a) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(a.appraisal_cycle || a.name) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(a.start_date || "") + "</div></div></div>" +
+        "<span class='bz-badge bz-badge-" + (a.status === "Completed" ? "success" : "blue") + "'>" + BZ.esc(a.status || "--") + "</span>";
+      ap.appendChild(row);
+    });
+    if (!(d.appraisals || []).length) ap.innerHTML = "<div class='bz-empty'><i data-lucide='clipboard-check'></i><div>No appraisals yet</div></div>";
+
+    var fb = document.getElementById("pf-fb-list");
+    (d.feedback || []).slice(0, 5).forEach(function (f) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(f.reviewer || "") + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc((f.remarks || "").slice(0, 90)) + "</div></div></div>" +
+        "<span class='bz-badge bz-badge-mint'>" + BZ.esc(f.performance || "--") + "</span>";
+      fb.appendChild(row);
+    });
+    if (!(d.feedback || []).length) fb.innerHTML = "<div class='bz-empty'><i data-lucide='messages-square'></i><div>No feedback yet</div></div>";
+
+    var g = document.getElementById("pf-gap-list");
+    var gaps = d.skill_gaps && d.skill_gaps.gaps ? d.skill_gaps.gaps : [];
+    gaps.forEach(function (s) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div class='bz-strong'>" + BZ.esc(s.skill) + "</div></div>" +
+        "<span class='bz-badge bz-badge-danger'>gap " + BZ.esc(s.gap) + "</span>";
+      g.appendChild(row);
+    });
+    if (!gaps.length) g.innerHTML = "<div class='bz-empty'><i data-lucide='target'></i><div>No skill gaps identified</div></div>";
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

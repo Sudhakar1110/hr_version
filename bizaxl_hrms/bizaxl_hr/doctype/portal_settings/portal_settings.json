@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-01-01 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "portal_enabled",
+  "ai_assistant_enabled",
+  "section_break_tickets",
+  "default_sla_hours",
+  "ticket_auto_assign",
+  "section_break_payroll",
+  "company",
+  "fiscal_year",
+  "section_break_wellness",
+  "counselling_hr_visible"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "portal_enabled",
+   "fieldtype": "Check",
+   "label": "Enable HR Portal"
+  },
+  {
+   "default": "1",
+   "fieldname": "ai_assistant_enabled",
+   "fieldtype": "Check",
+   "label": "Enable AI Assistant"
+  },
+  {
+   "fieldname": "section_break_tickets",
+   "fieldtype": "Section Break",
+   "label": "Help Desk"
+  },
+  {
+   "default": "8",
+   "fieldname": "default_sla_hours",
+   "fieldtype": "Int",
+   "label": "Default SLA Hours"
+  },
+  {
+   "default": "1",
+   "fieldname": "ticket_auto_assign",
+   "fieldtype": "Check",
+   "label": "Auto-assign tickets to category default assignee"
+  },
+  {
+   "fieldname": "section_break_payroll",
+   "fieldtype": "Section Break",
+   "label": "Payroll & Statutory"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Default Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Default Fiscal Year",
+   "options": "Fiscal Year"
+  },
+  {
+   "fieldname": "section_break_wellness",
+   "fieldtype": "Section Break",
+   "label": "Wellness"
+  },
+  {
+   "default": "1",
+   "fieldname": "counselling_hr_visible",
+   "fieldtype": "Check",
+   "label": "Counselling visible to HR (keep confidential as default)"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "is_single": 1,
+ "links": [],
+ "modified": "2026-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "bizaxl_hr",
+ "name": "Portal Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Manager"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - HR Manager"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - Founder"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - Payroll Officer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 0
+}

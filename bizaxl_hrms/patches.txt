@@ -1,0 +1,2 @@
+# Migration patches
+# Add importable patch paths to this file (one per line) when a migration is shipped.

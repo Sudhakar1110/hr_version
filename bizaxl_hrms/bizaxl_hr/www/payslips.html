@@ -1,0 +1,87 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Payslips | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="credit-card"></i> Compensation</span>
+    <h2 class="bz-h2">Payslips</h2>
+    <p class="bz-body-sm bz-muted">Download slips, review year-to-date totals, and view statutory illustrations.</p>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-4">
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="bz-ytd-gross">--</div><div class="bz-stat-label">YTD Gross</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="bz-ytd-net">--</div><div class="bz-stat-label">YTD Net Pay</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="bz-ytd-tax">--</div><div class="bz-stat-label">YTD Tax</div></div>
+  <div class="bz-card bz-stat"><div class="bz-stat-value" id="bz-last-net">--</div><div class="bz-stat-label">Latest Net Pay</div></div>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="file-text"></i> Payslip History</div></div>
+    <div id="bz-slips"></div>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="calculator"></i> Pay Calculator</div></div>
+    <div class="bz-field"><label for="gross">Monthly Gross Salary</label><input type="number" class="bz-input" id="gross" placeholder="e.g. 60000"></div>
+    <div class="bz-field"><label for="basic">Basic (defaults to 40% of gross)</label><input type="number" class="bz-input" id="basic" placeholder="e.g. 24000"></div>
+    <button class="bz-btn bz-btn-secondary" id="bz-calc"><i data-lucide="zap"></i> Illustrate</button>
+    <div id="bz-statutory" class="bz-grid bz-grid-2" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  BZ.api("payslips", { limit: 12 }).then(function (rows) {
+    var cont = document.getElementById("bz-slips");
+    if (rows && rows.length) {
+      cont.innerHTML = "";
+      rows.forEach(function (s) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-badge bz-badge-navy'>" + BZ.esc(s.start_date || "").slice(0, 7) + "</span>" +
+          "<div><div class='bz-strong'>" + BZ.esc(s.name) + "</div>" +
+          "<div class='bz-caption'>" + BZ.esc(s.start_date) + " → " + BZ.esc(s.end_date) + "</div></div></div>" +
+          "<div class='right'><div class='bz-strong'>" + BZ.fmtMoney(s.net_pay) + "</div>" +
+          "<div class='bz-caption'>Gross " + BZ.fmtMoney(s.gross_pay) + "</div></div>";
+        cont.appendChild(row);
+      });
+      var latest = rows[0];
+      document.getElementById("bz-last-net").textContent = BZ.fmtMoney(latest.net_pay);
+    } else {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='file-text'></i><div>No payslips generated yet</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("payslip_year_totals_data").then(function (t) {
+    if (t) {
+      document.getElementById("bz-ytd-gross").textContent = BZ.fmtMoney(t.ytd_gross);
+      document.getElementById("bz-ytd-net").textContent = BZ.fmtMoney(t.ytd_net);
+      document.getElementById("bz-ytd-tax").textContent = BZ.fmtMoney(t.ytd_tax);
+    }
+  }).catch(function(){});
+
+  document.getElementById("bz-calc").addEventListener("click", function () {
+    var gross = document.getElementById("gross").value, basic = document.getElementById("basic").value;
+    var cont = document.getElementById("bz-statutory");
+    BZ.api("statutory_illustration", { gross: gross, basic: basic || gross * 0.4 })
+      .then(function (r) {
+        if (!r) return;
+        cont.innerHTML = "";
+        [["PF (Employee)", r.pf], ["ESI", r.esi], ["Professional Tax", r.professional_tax], ["Est. TDS", r.tds]].forEach(function (kv) {
+          var c = document.createElement("div"); c.className = "bz-card bz-stat";
+          c.innerHTML = "<div class='bz-stat-value' style='font-size:18px'>" + BZ.fmtMoney(kv[1]) + "</div><div class='bz-stat-label'>" + BZ.esc(kv[0]) + "</div>";
+          cont.appendChild(c);
+        });
+      })
+      .catch(function () { BZ.toast("Could not compute statutory figures"); });
+  });
+});
+</script>
+{% endblock %}

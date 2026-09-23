@@ -1,0 +1,112 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Leave & Attendance | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="calendar-days"></i> Self-Service</span>
+    <h2 class="bz-h2">Leave & Attendance</h2>
+    <p class="bz-body-sm bz-muted">Apply for time off, review balances, and track attendanc</p>
+  </div>
+</section>
+
+<section class="bz-grid bz-grid-3">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="coffee"></i> Leave Balance</div></div>
+    <div id="bz-balances" class="bz-panel"></div>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="calendar-plus"></i> Apply Leave</div></div>
+    <div class="bz-field">
+      <label for="lt">Leave Type</label>
+      <select class="bz-select" id="lt"></select>
+    </div>
+    <div class="bz-grid bz-grid-2">
+      <div class="bz-field"><label for="frm">From</label><input type="date" class="bz-input" id="frm"></div>
+      <div class="bz-field"><label for="to">To</label><input type="date" class="bz-input" id="to"></div>
+    </div>
+    <div class="bz-field"><label for="reason">Reason</label><textarea class="bz-textarea" id="reason" placeholder="Optional note"></textarea></div>
+    <button class="bz-btn bz-btn-primary" id="bz-apply-leave" style="width:100%"><i data-lucide="send"></i> Submit Request</button>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="fingerprint"></i> My Requests</div></div>
+    <div id="bz-applications" class="bz-list"></div>
+  </div>
+</section>
+
+<section class="bz-card">
+  <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="bar-chart-3"></i> Last 30 Days</div></div>
+  <div class="bz-grid bz-grid-4" id="bz-attn-stats"></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+
+  var ltSel = document.getElementById("lt");
+  BZ.api("leave_summary").then(function (ls) {
+    var balCont = document.getElementById("bz-balances");
+    if (ls && ls.balances && ls.balances.length) {
+      balCont.innerHTML = "";
+      ls.balances.forEach(function (b) {
+        var opt = document.createElement("option"); opt.value = b.leave_type; opt.textContent = b.leave_type;
+        ltSel.appendChild(opt);
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-badge bz-badge-blue'>" + BZ.esc(b.leave_type) + "</span></div>" +
+          "<b>" + BZ.esc(b.balance) + "d</b>";
+        balCont.appendChild(row);
+      });
+    } else {
+      balCont.innerHTML = "<div class='bz-empty'><i data-lucide='coffee'></i><div>No allocations yet</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("leave_applications", { limit: 10 }).then(function (rows) {
+    var cont = document.getElementById("bz-applications");
+    if (rows && rows.length) {
+      cont.innerHTML = "";
+      rows.forEach(function (r) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        var tone = r.status === "Approved" ? "success" : (r.status === "Rejected" ? "danger" : "gray-10");
+        row.innerHTML =
+          "<div class='bz-row-left'><div><div class='bz-strong'>" + BZ.esc(r.leave_type) + "</div>" +
+          "<div class='bz-caption'>" + BZ.esc(r.from_date) + " &rarr; " + BZ.esc(r.to_date) + " (" + BZ.esc(r.total_leave_days) + "d)</div></div></div>" +
+          "<span class='bz-badge bz-badge-" + tone + "'>" + BZ.esc(r.status) + "</span>";
+        cont.appendChild(row);
+      });
+    } else {
+      cont.innerHTML = "<div class='bz-empty'><i data-lucide='inbox'></i><div>No leave requests yet</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("attendance_summary", { days: 30 }).then(function (s) {
+    var cont = document.getElementById("bz-attn-stats");
+    if (!s || !s.summary) return;
+    cont.innerHTML = "";
+    [["Present", s.summary.Present || 0], ["Absent", s.summary.Absent || 0], ["On Leave", s.summary["On Leave"] || 0], ["Attendance Rate", s.percentage + "%"]].forEach(function (kv) {
+      var card = document.createElement("div"); card.className = "bz-card bz-stat";
+      card.innerHTML = "<div class='bz-stat-value'>" + BZ.esc(kv[1]) + "</div><div class='bz-stat-label'>" + BZ.esc(kv[0]) + "</div>";
+      cont.appendChild(card);
+    });
+  }).catch(function(){});
+
+  document.getElementById("bz-apply-leave").addEventListener("click", function () {
+    var btn = this, lt = ltSel.value, frm = document.getElementById("frm").value, to = document.getElementById("to").value;
+    var reason = document.getElementById("reason").value;
+    if (!lt || !frm || !to) { BZ.toast("Select leave type and dates"); return; }
+    btn.disabled = true;
+    BZ.api("apply_leave", { leave_type: lt, from_date: frm, to_date: to, reason: reason })
+      .then(function (r) {
+        BZ.toast("Leave submitted: " + (r && r.name ? r.name : "ok"));
+        setTimeout(function () { location.reload(); }, 700);
+      })
+      .catch(function (e) { btn.disabled = false; BZ.toast((e && (e._server_messages ? JSON.parse(e._server_messages[0]).message : e.message)) || "Request failed"); });
+  });
+});
+</script>
+{% endblock %}

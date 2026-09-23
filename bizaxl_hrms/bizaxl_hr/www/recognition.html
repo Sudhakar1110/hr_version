@@ -1,0 +1,100 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Recognition | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="star"></i> Culture</span>
+    <h2 class="bz-h2">Recognition & Rewards</h2>
+    <p class="bz-body-sm bz-muted">Celebrate wins with energy points across the appreciation wall.</p>
+  </div>
+  <button class="bz-btn bz-btn-primary" id="bz-give-toggle"><i data-lucide="gift"></i> Give Recognition</button>
+</section>
+
+<section class="bz-card bz-grid bz-grid-3" id="bz-give-panel" style="display:none">
+  <div class="bz-field"><label>Recipient</label><input class="bz-input" id="r-recipient" placeholder="Employee ID or name"></div>
+  <div class="bz-field"><label>Title / Badge</label><input class="bz-input" id="r-title" placeholder="e.g. Great teamwork"></div>
+  <div class="bz-field"><label>Type</label>
+    <select class="bz-select" id="r-type">
+      <option>Appreciation</option><option>Badge</option><option>Milestone</option><option>Award</option><option>Employee of the Month</option><option>Anniversary</option>
+    </select>
+  </div>
+  <div class="bz-field" style="grid-column:1/-1"><label>Message</label><textarea class="bz-textarea" id="r-msg" placeholder="Say something nice..."></textarea></div>
+  <button class="bz-btn bz-btn-primary" id="bz-give-submit" style="grid-column:1/-1"><i data-lucide="gift"></i> Award Recognition</button>
+</section>
+
+<section class="bz-grid bz-grid-2">
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="users"></i> Leaderboard</div></div>
+    <div id="bz-board" class="bz-list"></div>
+  </div>
+
+  <div class="bz-card">
+    <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="sparkles"></i> Appreciation Wall</div></div>
+    <div id="bz-wall" class="bz-panel"></div>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var board = document.getElementById("bz-board");
+  var wall = document.getElementById("bz-wall");
+
+  var toggle = document.getElementById("bz-give-toggle");
+  toggle.addEventListener("click", function () {
+    var p = document.getElementById("bz-give-panel");
+    p.style.display = p.style.display === "none" ? "grid" : "none";
+  });
+  document.getElementById("bz-give-submit").addEventListener("click", function () {
+    BZ.api("give_recognition", {
+      recipient: document.getElementById("r-recipient").value,
+      title: document.getElementById("r-title").value,
+      rec_type: document.getElementById("r-type").value,
+      message: document.getElementById("r-msg").value
+    }).then(function () {
+      BZ.toast("Recognition awarded!");
+      setTimeout(function () { location.reload(); }, 700);
+    }).catch(function () { BZ.toast("Could not award recognition"); });
+  });
+
+  BZ.api("rewards_leaderboard", { limit: 10 }).then(function (rows) {
+    board.innerHTML = "";
+    if (rows && rows.length) {
+      rows.forEach(function (r, i) {
+        var row = document.createElement("div"); row.className = "bz-row";
+        row.innerHTML =
+          "<div class='bz-row-left'><span class='bz-avatar'>" + BZ.initials(r.employee_name) + "</span>" +
+          "<div><div class='bz-strong'>" + BZ.esc(r.employee_name) + "</div>" +
+          "<div class='bz-caption'>" + r.recognitions + " recognition" + (r.recognitions > 1 ? "s" : "") + "</div></div></div>" +
+          "<span class='bz-badge bz-badge-mint'><i data-lucide='zap'></i> " + BZ.esc(r.points) + "</span>";
+        board.appendChild(row);
+      });
+    } else {
+      board.innerHTML = "<div class='bz-empty'><i data-lucide='trending-up'></i><div>No recognitions yet</div></div>";
+    }
+  }).catch(function(){});
+
+  BZ.api("rewards_feed", { limit: 12 }).then(function (rows) {
+    wall.innerHTML = "";
+    if (rows && rows.length) {
+      rows.forEach(function (r) {
+        var el = document.createElement("div"); el.className = "bz-card";
+        el.innerHTML =
+          "<div style='display:flex;align-items:center;gap:10px;margin-bottom:8px'>" +
+          "<span class='bz-avatar'>" + BZ.initials(r.recognized_employee) + "</span>" +
+          "<div><div class='bz-strong' style='font-size:14px'>" + BZ.esc(r.recognized_employee) + "</div>" +
+          "<div class='bz-caption'>" + BZ.esc(r.recognition_type) + " · " + BZ.esc(r.posting_date) + "</div></div>" +
+          "<span class='bz-badge bz-badge-blue' style='margin-left:auto'>" + BZ.esc(r.energy_points || 0) + " pts</span></div>" +
+          "<div style='font-size:14px;color:var(--bz-gray-40)'>" + BZ.esc(r.message || "") + "</div>";
+        wall.appendChild(el);
+      });
+    } else {
+      wall.innerHTML = "<div class='bz-empty'><i data-lucide='star'></i><div>The wall is empty - be the first!</div></div>";
+    }
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

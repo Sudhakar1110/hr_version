@@ -1,0 +1,92 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title or "HR Portal" }} | Bizaxl{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block page_content %}
+{% set bz_nav = [
+    ("/dashboard", "Dashboard", "layout-dashboard"),
+    ("/profile", "My Profile", "user"),
+    ("/leave-and-attendance", "Leave & Attendance", "calendar-days"),
+    ("/my-work", "My Work", "clipboard-check"),
+    ("/expenses-and-travel", "Expenses & Travel", "credit-card"),
+    ("/performance", "Performance", "trending-up"),
+    ("/learning", "Learning", "book-open"),
+    ("/help-and-grievance", "Help & Grievance", "life-buoy"),
+    ("/tasks", "Tasks", "check-square"),
+    ("/meetings", "Meetings", "users"),
+    ("/recognition", "Recognition", "star"),
+    ("/wellness", "Wellness", "heart"),
+    ("/holiday-calendar", "Holiday Calendar", "calendar"),
+    ("/onboarding", "Onboarding", "rocket"),
+    ("/offboarding", "Offboarding", "log-out"),
+    ("/documents", "Documents", "folder"),
+    ("/payslips", "Payslips", "credit-card"),
+    ("/directory", "Directory", "search"),
+    ("/announcements", "Announcements", "megaphone"),
+    ("/notifications", "Notifications", "bell"),
+    ("/requests", "My Requests", "inbox"),
+    ("/reports", "Reports & Analytics", "bar-chart-3"),
+    ("/my-team", "My Team", "users"),
+    ("/recruitment", "Recruitment", "briefcase"),
+    ("/interviews", "Interviews", "video"),
+    ("/ai-assistant", "AI Assistant", "bot"),
+    ("/settings", "Settings", "settings"),
+] %}
+{% set bz_path = "/" ~ (path or "").strip("/") %}
+<body class="bz-portal">
+  <div class="bz-body">
+    <header class="bz-topbar">
+      <a class="bz-brand" href="/dashboard">
+        <span class="bz-brand-mark"><i data-lucide="layout-dashboard"></i></span>
+        <span>Bizaxl HR</span>
+      </a>
+      <div class="bz-topbar-spacer"></div>
+      <a class="bz-iconbtn" href="/notifications" title="Notifications">
+        <i data-lucide="bell"></i>
+        <span class="bz-notif-dot" id="bz-notif-dot" style="display:none"></span>
+      </a>
+      <a class="bz-iconbtn" href="/ai-assistant" title="AI Assistant">
+        <i data-lucide="bot"></i>
+      </a>
+      <a href="/profile" title="My Profile">
+        <span class="bz-avatar" id="bz-avatar">?</span>
+      </a>
+    </header>
+
+    <div class="bz-layout">
+      <aside class="bz-sidebar">
+        {% for url, label, icon in bz_nav %}
+        <a class="bz-nav-link {{ 'active' if url == bz_path else '' }}" href="{{ url }}">
+          <i data-lucide="{{ icon }}"></i>
+          <span>{{ label }}</span>
+        </a>
+        {% endfor %}
+      </aside>
+
+      <main class="bz-main">
+        {% block bz_content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.min.js"></script>
+  <script src="/assets/bizaxl_hrms/js/bizaxl_portal.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var av = document.getElementById("bz-avatar");
+      var api = window.BizaxlPortal || {};
+      if (api.api) {
+        api.api("current_user").then(function (r) {
+          if (r && r.employee_name) {
+            if (av) av.textContent = api.initials(r.employee_name);
+            if (av) av.title = r.employee_name;
+          }
+        }).catch(function () {});
+      }
+    });
+  </script>
+</body>
+{% endblock %}

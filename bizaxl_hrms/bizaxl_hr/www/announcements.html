@@ -1,0 +1,41 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Announcements | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="megaphone"></i> Company News</span>
+    <h2 class="bz-h2">Announcements</h2>
+  </div>
+</section>
+
+<div id="bz-ann" class="bz-panel" style="max-width:900px"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("bz-ann");
+  BZ.api("announcements", { limit: 15 }).then(function (rows) {
+    cont.innerHTML = "";
+    if (!rows || !rows.length) {
+      cont.innerHTML = "<div class='bz-card bz-empty'><i data-lucide='megaphone'></i><div>No announcements yet</div></div>";
+      return;
+    }
+    rows.forEach(function (a) {
+      var card = document.createElement("div"); card.className = "bz-card";
+      card.innerHTML =
+        "<div class='bz-card-header' style='margin-bottom:10px'>" +
+        "<div class='bz-card-title' style='font-size:16px'>" + BZ.esc(a.title) +
+        (a.pinned ? " <span class='bz-badge bz-badge-mint'><i data-lucide='pin'></i>Pinned</span>" : "") + "</div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(a.announcement_type || "General") + "</span></div>" +
+        (a.message ? "<div style='font-size:14px;line-height:24px;color:var(--bz-gray-40)'>" + a.message + "</div>" : "") +
+        "<div class='bz-caption' style='margin-top:10px'>" + BZ.esc(a.announcement_date || "") +
+        (a.author ? " · " + BZ.esc(a.author) : "") + "</div>";
+      cont.appendChild(card);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

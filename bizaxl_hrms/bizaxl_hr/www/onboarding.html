@@ -1,0 +1,35 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Onboarding | Bizaxl{% endblock %}
+
+{% block bz_content %}
+<section class="bz-page-head">
+  <div>
+    <span class="bz-badge bz-badge-navy"><i data-lucide="rocket"></i> New Joiners</span>
+    <h2 class="bz-h2">Onboarding</h2>
+    <p class="bz-body-sm bz-muted">Track your joining checklist milestones.</p>
+  </div>
+</section>
+<section class="bz-card" style="max-width:860px">
+  <div class="bz-card-header"><div class="bz-card-title"><i data-lucide="rocket"></i> My Onboarding</div></div>
+  <div id="ob-list" class="bz-list"></div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var BZ = window.BizaxlPortal;
+  if (!BZ || !BZ.api) return;
+  var cont = document.getElementById("ob-list");
+  BZ.api("my_onboarding").then(function (r) {
+    var rows = r && r.onboarding ? r.onboarding : [];
+    if (!rows.length) { cont.innerHTML = "<div class='bz-empty'><i data-lucide='rocket'></i><div>No onboarding records</div></div>"; return; }
+    rows.forEach(function (o) {
+      var row = document.createElement("div"); row.className = "bz-row";
+      row.innerHTML = "<div class='bz-row-left'><div class='bz-strong'>" + BZ.esc(o.name) + "</div>" +
+        "<div class='bz-caption'>" + BZ.esc(o.boarding_begins_on || "") + "</div></div>" +
+        "<span class='bz-badge bz-badge-blue'>" + BZ.esc(o.boarding_status) + "</span>";
+      cont.appendChild(row);
+    });
+  }).catch(function(){});
+});
+</script>
+{% endblock %}

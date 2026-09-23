@@ -1,0 +1,248 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:FFS-{YYYY}-{######}",
+ "creation": "2026-01-01 00:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "date_of_joining",
+  "resignation_date",
+  "last_working_day",
+  "status",
+  "section_break_financials",
+  "gross_monthly",
+  "basic_monthly",
+  "notice_period_days",
+  "earned_days",
+  "gross_earned",
+  "notice_pay_instead",
+  "unpaid_leave_days",
+  "unpaid_leave_deduction",
+  "gratuity",
+  "pending_advance",
+  "other_recoveries",
+  "employee_pf",
+  "employee_esi",
+  "tds",
+  "professional_tax",
+  "net_payable",
+  "payout_date",
+  "section_break_tasks",
+  "ffs_tasks"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.date_of_joining",
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date of Joining",
+   "read_only": 1
+  },
+  {
+   "fieldname": "resignation_date",
+   "fieldtype": "Date",
+   "label": "Resignation Date"
+  },
+  {
+   "fieldname": "last_working_day",
+   "fieldtype": "Date",
+   "label": "Last Working Day"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nProcessing\nApproved\nPaid"
+  },
+  {
+   "fieldname": "section_break_financials",
+   "fieldtype": "Section Break",
+   "label": "Financials"
+  },
+  {
+   "label": "Gross Monthly (CTC)",
+   "fieldname": "gross_monthly",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "fieldname": "basic_monthly",
+   "fieldtype": "Currency",
+   "label": "Basic Monthly",
+   "options": "Company:default_currency"
+  },
+  {
+   "fieldname": "notice_period_days",
+   "fieldtype": "Int",
+   "label": "Notice Period (Days)"
+  },
+  {
+   "label": "Earned Days (Current Month)",
+   "fieldname": "earned_days",
+   "fieldtype": "Int"
+  },
+  {
+   "label": "Gross Earned",
+   "fieldname": "gross_earned",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Notice Pay in Lieu",
+   "fieldname": "notice_pay_instead",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "fieldname": "unpaid_leave_days",
+   "fieldtype": "Int",
+   "label": "Unpaid / Short Leave Days"
+  },
+  {
+   "label": "Unpaid Leave Deduction",
+   "fieldname": "unpaid_leave_deduction",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Gratuity",
+   "fieldname": "gratuity",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Pending Advance Recovery",
+   "fieldname": "pending_advance",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Other Recoveries",
+   "fieldname": "other_recoveries",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Employee PF",
+   "fieldname": "employee_pf",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Employee ESI",
+   "fieldname": "employee_esi",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "TDS",
+   "fieldname": "tds",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "label": "Professional Tax",
+   "fieldname": "professional_tax",
+   "fieldtype": "Currency",
+   "options": "Company:default_currency"
+  },
+  {
+   "fieldname": "net_payable",
+   "fieldtype": "Currency",
+   "label": "Net Payable",
+   "options": "Company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payout_date",
+   "fieldtype": "Date",
+   "label": "Payout Date"
+  },
+  {
+   "fieldname": "section_break_tasks",
+   "fieldtype": "Section Break",
+   "label": "Process Checklist"
+  },
+  {
+   "fieldname": "ffs_tasks",
+   "fieldtype": "Table",
+   "label": "Full & Final Tasks",
+   "options": "FFS Task"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "bizaxl_hr",
+ "name": "Full and Final Settlement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - Payroll Officer"
+  },
+  {
+   "create": 1,
+   "read": 1,
+   "write": 1,
+   "role": "HR Portal - HR Manager"
+  },
+  {
+   "read": 1,
+   "role": "HR Portal - Employee"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "employee_name",
+ "track_changes": 1
+}
