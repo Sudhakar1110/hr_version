@@ -154,13 +154,45 @@ def apply_leave(leave_type, from_date, to_date, reason=None, half_day=0, half_da
     """
     Apply for leave. Balance and workflow are validated before submission.
     """
+    from frappe.utils import date_diff as _date_diff
+
     from bizaxl_hrms.bizaxl_hr.portal.leave import get_leave_balance
 
     require_login()
     emp = get_session_employee(force=True)
     if not frappe.db.exists("Leave Type", leave_type):
         frappe.throw(_("Invalid leave type: {0}").format(leave_type))
+    if not from_date or not to_date:
+        frappe.throw(_("Leave dates are required"))
+    if from_date > to_date:
+        frappe.throw(_("From date cannot be after To date"))
+
+    requested_days = _date_diff(to_date, from_date) + 1
+    half_day = int(half_day or 0)
+    if half_day:
+        requested_days = 0.5
+        half_day_date = half_day_date or from_date
+
     balance = get_leave_balance(emp.name, leave_type, from_date)
+    allocation = frappe.get_all(
+        "Leave Allocation",
+        filters={
+            "employee": emp.name,
+            "leave_type": leave_type,
+            "docstatus": 1,
+            "from_date": ("<=", from_date),
+            "to_date": (">=", to_date),
+        },
+        fields=["name", "total_leaves_allocated", "leaves_taken"],
+        limit=1,
+    )
+    if allocation and balance < requested_days:
+        frappe.throw(
+            _("Insufficient {0} balance. Available: {1} day(s), requested: {2} day(s).").format(
+                leave_type, balance, requested_days
+            )
+        )
+
     doc = frappe.get_doc(
         {
             "doctype": "Leave Application",
@@ -169,7 +201,7 @@ def apply_leave(leave_type, from_date, to_date, reason=None, half_day=0, half_da
             "from_date": from_date,
             "to_date": to_date,
             "reason": reason,
-            "half_day": 1 if int(half_day or 0) else 0,
+            "half_day": 1 if half_day else 0,
             "half_day_date": half_day_date,
         }
     )
@@ -542,8 +574,8 @@ def my_onboarding():
     rows = frappe.get_all(
         "Employee Onboarding",
         filters={"employee": emp.name},
-        fields=["name", "boarding_begins_on", "boarding_status", "employee_name", "company"],
-        order_by="boarding_begins_on desc",
+        fields=["name", "start_date", "status", "employee_name", "template", "progress"],
+        order_by="start_date desc",
     )
     return {"onboarding": rows}
 
@@ -557,8 +589,8 @@ def my_offboarding():
     rows = frappe.get_all(
         "Employee Offboarding",
         filters={"employee": emp.name},
-        fields=["name", "boarding_status", "employee_name", "resignation_letter_date", "offboarding_begin_date"],
-        order_by="offboarding_begin_date desc",
+        fields=["name", "status", "employee_name", "resignation_date", "last_working_day", "exit_interview_date"],
+        order_by="resignation_date desc",
     )
     return {"offboarding": rows}
 
@@ -572,7 +604,7 @@ def my_ffs_status():
     rows = frappe.get_all(
         "Full and Final Settlement",
         filters={"employee": emp.name},
-        fields=["name", "status", "settlement_total", "date_of_joining", "last_working_day"],
+        fields=["name", "status", "net_payable", "date_of_joining", "last_working_day"],
         order_by="creation desc",
     )
     return {"ffs": rows}

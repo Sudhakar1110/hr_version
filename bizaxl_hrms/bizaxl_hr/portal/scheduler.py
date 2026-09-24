@@ -149,35 +149,40 @@ def _leave_balance_summary():
 
 
 def _compliance_checklist():
-    """Quarterly statutory compliance job - generates Compliance Task records as needed."""
+    """Statutory compliance job - generates Compliance Task records for the current quarter."""
     if not frappe.db.exists("DocType", "Compliance Task"):
         return
+    from frappe.utils import get_last_day, getdate
+
+    today_dt = getdate(today())
+    quarter = "Q{0} FY{1}".format((today_dt.month - 1) // 3 + 1, today_dt.year)
+    due_date = get_last_day(today_dt)
     tasks = [
-        ("File PF returns (Form 3A)", "Statutory"),
-        ("File ESI monthly returns", "Statutory"),
-        ("Verify professional tax remittances", "Statutory"),
-        ("Reconcile income-tax (TDS) challans", "Statutory"),
-        ("Renew labour welfare fund declarations", "Statutory"),
-        ("Audit of full & final settlements", "Employee Records"),
+        ("PF", "File PF returns (Form 3A)"),
+        ("ESI", "File ESI monthly returns"),
+        ("PT", "Verify professional tax remittances"),
+        ("TDS", "Reconcile income-tax (TDS) challans"),
+        ("LWF", "Renew labour welfare fund declarations"),
+        ("Audit", "Audit of full & final settlements"),
     ]
     created = 0
-    for description, category in tasks:
+    for compliance_type, title in tasks:
         exists = frappe.get_all(
             "Compliance Task",
-            filters={"description": description, "month": today()[:7]},
+            filters={"compliance_type": compliance_type, "quarter": quarter, "title": title},
             fields=["name"],
             limit=1,
         )
         if not exists:
-            doc = frappe.get_doc(
+            frappe.get_doc(
                 {
                     "doctype": "Compliance Task",
-                    "description": description,
-                    "category": category,
-                    "month": today()[:7],
-                    "status": "Open",
+                    "compliance_type": compliance_type,
+                    "title": title,
+                    "quarter": quarter,
+                    "due_date": due_date,
+                    "status": "Pending",
                 }
-            )
-            doc.insert(ignore_permissions=True)
+            ).insert(ignore_permissions=True)
             created += 1
-    return {"tasks_created": created, "month": today()[:7]}
+    return {"tasks_created": created, "quarter": quarter}

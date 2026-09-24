@@ -2,6 +2,10 @@
 
 {% block title %}{{ title or "HR Portal" }} | Bizaxl{% endblock %}
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
 {% block navbar %}{% endblock %}
 {% block footer %}{% endblock %}
 
@@ -37,7 +41,7 @@
 ] %}
 {% set bz_path = "/" ~ (path or "").strip("/") %}
 <body class="bz-portal">
-  <div class="bz-body">
+  <div class="bz-shell">
     <header class="bz-topbar">
       <a class="bz-brand" href="/dashboard">
         <span class="bz-brand-mark"><i data-lucide="layout-dashboard"></i></span>

@@ -60,15 +60,33 @@ def hiring_pipeline_summary():
     return {"total": total, "stages": stages, "source_breakdown": dict(by_source)}
 
 
+INTERVIEW_FIELDS = [
+    "name",
+    "job_applicant",
+    "applicant_name",
+    "interview_round",
+    "scheduled_on",
+    "from_time",
+    "to_time",
+    "status",
+]
+
+
+def _safe_interview_rows(rows):
+    """Return only known Interview columns so child-table/bespoke fields never break the query."""
+    return [{k: r.get(k) for k in INTERVIEW_FIELDS} for r in rows]
+
+
 def get_interviews(limit=100):
     if not frappe.db.exists("DocType", "Interview"):
         return []
-    return frappe.get_all(
+    rows = frappe.get_all(
         "Interview",
-        fields=["name", "applicant_name", "job_applicant", "scheduled_on", "interview_round", "status", "interview_venue", "custom_location", "interviewers"],
+        fields=["*"],
         order_by="scheduled_on desc",
         limit_page_length=limit,
     )
+    return _safe_interview_rows(rows)
 
 
 def get_upcoming_interviews(days_ahead=14, limit=50):
@@ -76,13 +94,14 @@ def get_upcoming_interviews(days_ahead=14, limit=50):
         return []
     today_dt = getdate(today())
     end = add_days(today_dt, days_ahead)
-    return frappe.get_all(
+    rows = frappe.get_all(
         "Interview",
         filters={"scheduled_on": ("between", [str(today_dt) + " 00:00:00", str(end) + " 23:59:59"])},
-        fields=["name", "applicant_name", "job_applicant", "scheduled_on", "interview_round", "status", "interview_venue", "interviewers"],
+        fields=["*"],
         order_by="scheduled_on asc",
         limit_page_length=limit,
     )
+    return _safe_interview_rows(rows)
 
 
 def applicant_details(job_applicant):

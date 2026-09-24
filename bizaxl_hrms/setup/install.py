@@ -74,8 +74,48 @@ def before_install():
 
 
 def after_install():
+    run_setup()
+    frappe.db.commit()
+
+
+def after_migrate():
+    """Re-run idempotent setup so partially-installed / older sites get repaired
+    (roles, seed data, settings and desk workspace) on the next `bench migrate`."""
+    run_setup()
+    frappe.db.commit()
+    sync_workspace()
+
+
+def run_setup():
+    """Idempotent setup tasks. Safe to run on install and on every migrate."""
     create_roles()
     create_ticket_categories()
     create_wellness_programs()
     ensure_bizaxl_portal_settings()
-    frappe.db.commit()
+
+
+def sync_workspace():
+    """Ensure the 'Bizaxl HR' desk workspace exists after migration."""
+    if not frappe.db.exists("DocType", "Workspace"):
+        return
+    if frappe.db.exists("Workspace", "Bizaxl HR"):
+        return
+    workspace_path = frappe.get_app_path(
+        "bizaxl_hrms",
+        "bizaxl_hr",
+        "workspace",
+        "bizaxl_hr",
+        "bizaxl_hr.json",
+    )
+    try:
+        with open(workspace_path, "r", encoding="utf-8") as f:
+            import json
+
+            data = json.load(f)
+        doc = frappe.get_doc(data)
+        doc.flags.ignore_permissions = True
+        doc.flags.ignore_links = True
+        doc.flags.ignore_validate = True
+        doc.insert(ignore_permissions=True, ignore_if_duplicate=True)
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Bizaxl HR workspace sync")

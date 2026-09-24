@@ -20,6 +20,7 @@ fixtures = []
 # Before / after app install
 before_install = "bizaxl_hrms.setup.before_install"
 after_install = "bizaxl_hrms.setup.after_install"
+after_migrate = "bizaxl_hrms.setup.after_migrate"
 
 # Website route rules
 website_route_rules = []

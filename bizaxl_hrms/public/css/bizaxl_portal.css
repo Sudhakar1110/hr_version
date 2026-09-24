@@ -20,6 +20,7 @@
   --bz-black: #0a0a0a;
   --bz-muted: #737373;
   --bz-success: #00c950;
+  --bz-border: #f4f4f5;
 
   /* Brand gradient */
   --bz-gradient: linear-gradient(90deg, #14f1b1 0%, #114eff 50%, #091526 100%);
@@ -194,7 +195,7 @@ svg.lucide { flex-shrink: 0; }
 /* ------------------------------------------------------------------ */
 /* Portal shell                                                        */
 /* ------------------------------------------------------------------ */
-.bz-body {
+.bz-shell {
   min-height: 100vh;
   display: flex;
   flex-direction: column;

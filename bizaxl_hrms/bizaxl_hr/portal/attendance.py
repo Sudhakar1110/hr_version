@@ -51,7 +51,7 @@ def checkin_overview(employee, on_date=None):
         "status": status,
         "first_in": _hm(first_in.time) if first_in else None,
         "last_out": _hm(last_out.time) if last_out else None,
-        "shift": frappe.get_value("Employee", employee, "shift") or "General 9-6",
+        "shift": frappe.get_value("Employee", employee, "default_shift") or "General 9-6",
     }
 
 
