@@ -68,7 +68,7 @@
 
 * { box-sizing: border-box; }
 
-body.bz-portal {
+html, body, body.bz-portal, .bz-shell {
   margin: 0;
   font-family: var(--bz-font);
   font-size: 14px;
@@ -76,9 +76,18 @@ body.bz-portal {
   background: #fbfbfc;
   -webkit-font-smoothing: antialiased;
 }
-.bz-portal a { color: var(--bz-blue); text-decoration: none; }
-.bz-portal a:hover { text-decoration: none; opacity: 0.9; }
+body.bz-portal a, .bz-shell a { color: var(--bz-blue); text-decoration: none; }
+body.bz-portal a:hover, .bz-shell a:hover { text-decoration: none; opacity: 0.9; }
 svg.lucide { flex-shrink: 0; }
+
+/* Neutralise Frappe default web chrome that would otherwise re-skin pages */
+.page-content-wrapper,
+.page-breadcrumbs,
+.page-header-wrapper,
+.page-header,
+.page-header-actions-block,
+.page-footer { display: none !important; }
+main.container { max-width: none !important; margin: 0 !important; padding: 0 !important; }
 
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */

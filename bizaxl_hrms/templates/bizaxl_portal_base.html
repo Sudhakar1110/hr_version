@@ -2,14 +2,18 @@
 
 {% block title %}{{ title or "HR Portal" }} | Bizaxl{% endblock %}
 
+{% block head %}
+{{ super() }}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+{% endblock %}
 
 {% block navbar %}{% endblock %}
 {% block footer %}{% endblock %}
 
-{% block page_content %}
+{# Bypass Frappe's page-content-wrapper / container / breadcrumbs chrome #}
+{% block content %}
 {% set bz_nav = [
     ("/dashboard", "Dashboard", "layout-dashboard"),
     ("/profile", "My Profile", "user"),
@@ -40,8 +44,7 @@
     ("/settings", "Settings", "settings"),
 ] %}
 {% set bz_path = "/" ~ (path or "").strip("/") %}
-<body class="bz-portal">
-  <div class="bz-shell">
+<div class="bz-shell">
     <header class="bz-topbar">
       <a class="bz-brand" href="/dashboard">
         <span class="bz-brand-mark"><i data-lucide="layout-dashboard"></i></span>
@@ -75,22 +78,27 @@
       </main>
     </div>
   </div>
+{% endblock %}
 
-  <script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.min.js"></script>
-  <script src="/assets/bizaxl_hrms/js/bizaxl_portal.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var av = document.getElementById("bz-avatar");
-      var api = window.BizaxlPortal || {};
-      if (api.api) {
-        api.api("current_user").then(function (r) {
-          if (r && r.employee_name) {
-            if (av) av.textContent = api.initials(r.employee_name);
-            if (av) av.title = r.employee_name;
-          }
-        }).catch(function () {});
-      }
-    });
-  </script>
-</body>
+{% block page_content %}{% endblock %}
+
+{% block body_include %}
+<script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.min.js"></script>
+<script src="/assets/bizaxl_hrms/js/bizaxl_portal.js"></script>
+<script>
+  document.body.classList.add("bz-portal");
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.lucide) window.lucide.createIcons();
+    var av = document.getElementById("bz-avatar");
+    var api = window.BizaxlPortal || {};
+    if (api.api) {
+      api.api("current_user").then(function (r) {
+        if (r && r.employee_name) {
+          if (av) av.textContent = api.initials(r.employee_name);
+          if (av) av.title = r.employee_name;
+        }
+      }).catch(function () {});
+    }
+  });
+</script>
 {% endblock %}
