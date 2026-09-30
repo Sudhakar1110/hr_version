@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var d = new Date(x.holiday_date + "T00:00:00");
         var label = d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
         row.innerHTML =
-          "<div class='bz-row-left'><i data-lucide='calendar' style='width:18px;height:18px;color:var(--bz-mint)'></i>" +
+          "<div class='bz-row-left'><i data-lucide='calendar' style='width:16px;height:16px;color:var(--bz-mint)'></i>" +
           "<div><div class='bz-strong'>" + BZ.esc(x.description || "Holiday") + "</div>" +
           "<div class='bz-caption'>" + label + "</div></div></div>";
         cont.appendChild(row);

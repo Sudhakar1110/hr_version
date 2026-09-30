@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
       card.innerHTML =
         "<div class='bz-card-header' style='margin-bottom:10px'><div class='bz-card-title' style='font-size:16px'>" + BZ.esc(p.program_name) + "</div>" +
         "<span class='bz-badge bz-badge-blue'>" + BZ.esc(p.program_type) + "</span></div>" +
-        "<p style='font-size:13px;color:var(--bz-gray-40);min-height:36px'>" + BZ.esc(p.description || "") + "</p>" +
+        "<p style='font-size:14px;color:var(--bz-gray-40);min-height:36px'>" + BZ.esc(p.description || "") + "</p>" +
         "<div class='bz-caption'>" + BZ.esc(p.start_date || "") + " &rarr; " + BZ.esc(p.end_date || "") + "</div>" +
         "<button class='bz-btn bz-btn-tertiary bz-btn-sm' style='margin-top:12px;width:100%' data-reg='" + BZ.esc(p.name) + "'>Enroll</button>";
       grid.appendChild(card);
