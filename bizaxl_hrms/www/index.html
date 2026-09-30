@@ -1,0 +1,13 @@
+{% extends "bizaxl_hrms/templates/bizaxl_portal_base.html" %}
+
+{% block title %}Bizaxl HR{% endblock %}
+
+{% block bz_content %}
+<section class="bz-card" style="max-width:520px;margin:48px auto;text-align:center">
+  <span class="bz-badge bz-badge-navy"><i data-lucide="layout-dashboard"></i> Bizaxl HR Portal</span>
+  <h2 class="bz-h2" style="margin:12px 0 6px">Opening your dashboard</h2>
+  <p class="bz-body-sm bz-muted" style="margin:0 0 20px">Self-service for leave, attendance, payslips, tasks and more.</p>
+  <a class="bz-btn bz-btn-primary" href="/dashboard"><i data-lucide="arrow-right"></i> Go to Dashboard</a>
+</section>
+<script>setTimeout(function () { location.replace("/dashboard"); }, 400);</script>
+{% endblock %}
