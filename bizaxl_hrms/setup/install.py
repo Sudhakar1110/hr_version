@@ -84,6 +84,26 @@ def after_migrate():
     run_setup()
     frappe.db.commit()
     sync_workspace()
+    clear_portal_caches()
+
+
+def clear_portal_caches():
+    """Drop template/website caches so the latest portal markup and inline
+    design-system CSS are always served after a migrate."""
+    try:
+        frappe.clear_cache()
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Bizaxl portal clear_cache")
+    try:
+        if hasattr(frappe, "clear_website_cache"):
+            frappe.clear_website_cache()
+        else:
+            from frappe.website.utils import clear_cache as _clear_web
+
+            _clear_web()
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Bizaxl portal clear_website_cache")
+    frappe.db.commit()
 
 
 def run_setup():
